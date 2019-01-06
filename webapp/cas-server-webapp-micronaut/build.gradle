@@ -1,0 +1,11 @@
+project.ext["mainClassName"] = "org.apereo.cas.CasMicronautWebApplication"
+apply from: rootProject.file("gradle/webapp.gradle")
+
+description = "Apereo CAS Web Application via Micronaut"
+
+dependencies {
+    compile("io.micronaut:micronaut-http-server:1.0.1")
+    runtime("io.micronaut.spring:micronaut-spring-web:1.0.0.M1")
+    runtime("io.micronaut:micronaut-http-server-netty:1.0.1")
+    runtime("io.micronaut:micronaut-views:1.0.1")
+}

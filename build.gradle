@@ -186,7 +186,7 @@ subprojects {
     task dependencyCheckAnalyze(type: org.owasp.dependencycheck.gradle.tasks.Analyze) {
         /* 
          Disable analyze in cas-server-core-api and cas-server-core because
-         support and webapp subprojects will include their dependencies transitively. 
+         support and webapp sub-projects will include their dependencies transitively. 
         */
         enabled = !"${project.name}".contains("cas-server-core")
     }
@@ -422,7 +422,15 @@ subprojects {
         testImplementation libraries.tests
         testImplementation libraries.groovy
         testImplementation libraries.log4j
+        
         compileOnly libraries.findbugsannotations
+        
+        annotationProcessor "io.micronaut:micronaut-inject-java:1.0.1"
+        annotationProcessor "io.micronaut:micronaut-validation:1.0.1"
+        annotationProcessor "io.micronaut.spring:micronaut-spring-annotation:1.0.0.M1"
+        annotationProcessor "io.micronaut.spring:micronaut-spring-web-annotation:1.0.0.M1"
+
+        compile "io.micronaut:micronaut-inject:1.0.1"
     }
 
     if (project.name != 'cas-server-core-api-test-category') {

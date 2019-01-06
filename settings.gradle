@@ -334,4 +334,5 @@ include "webapp:cas-server-webapp-init-tomcat"
 include "webapp:cas-server-webapp-jetty"
 include "webapp:cas-server-webapp-tomcat"
 include "webapp:cas-server-webapp-undertow"
+include "webapp:cas-server-webapp-micronaut"
 
