@@ -34,7 +34,7 @@ import org.apereo.cas.services.support.RegisteredServiceMappedRegexAttributeFilt
 import org.apereo.cas.services.support.RegisteredServiceMutantRegexAttributeFilterTests;
 import org.apereo.cas.services.support.RegisteredServiceRegexAttributeFilterTests;
 import org.apereo.cas.services.support.RegisteredServiceScriptedAttributeFilterTests;
-import org.apereo.cas.util.services.DefaultRegisteredServiceJsonSerializerTests;
+import org.apereo.cas.util.services.RegisteredServiceJsonSerializerTests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -84,7 +84,7 @@ import org.junit.runners.Suite;
     RegisteredServiceMutantRegexAttributeFilterTests.class,
     RegisteredServiceScriptedAttributeFilterTests.class,
     GroovyRegisteredServiceAccessStrategyTests.class,
-    DefaultRegisteredServiceJsonSerializerTests.class
+    RegisteredServiceJsonSerializerTests.class
 })
 public class AllServicesTestsSuite {
 }

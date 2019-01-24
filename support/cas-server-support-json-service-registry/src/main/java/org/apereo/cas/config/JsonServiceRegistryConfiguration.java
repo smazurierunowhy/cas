@@ -2,12 +2,20 @@ package org.apereo.cas.config;
 
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.services.JsonServiceRegistry;
+import org.apereo.cas.services.RegisteredService;
 import org.apereo.cas.services.ServiceRegistry;
 import org.apereo.cas.services.ServiceRegistryExecutionPlan;
 import org.apereo.cas.services.ServiceRegistryExecutionPlanConfigurer;
+import org.apereo.cas.services.ServicesManager;
 import org.apereo.cas.services.replication.RegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.RegisteredServiceResourceNamingStrategy;
+import org.apereo.cas.services.util.CasAddonsRegisteredServicesJsonSerializer;
+import org.apereo.cas.services.util.RegisteredServiceJsonSerializer;
+import org.apereo.cas.services.util.RegisteredServiceSimpleBeanPropertyFilter;
+import org.apereo.cas.util.CollectionUtils;
+import org.apereo.cas.util.serialization.StringSerializer;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.springframework.beans.factory.ObjectProvider;
@@ -22,6 +30,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
+import java.util.Collection;
+
 /**
  * This is {@link JsonServiceRegistryConfiguration}.
  *
@@ -33,6 +43,10 @@ import org.springframework.core.Ordered;
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE + 1)
 @ConditionalOnProperty(prefix = "cas.serviceRegistry.json", name = "location")
 public class JsonServiceRegistryConfiguration {
+
+    @Autowired
+    @Qualifier("servicesManager")
+    private ObjectProvider<ServicesManager> servicesManager;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -53,8 +67,26 @@ public class JsonServiceRegistryConfiguration {
     public ServiceRegistry jsonServiceRegistry() {
         val registry = casProperties.getServiceRegistry();
         return new JsonServiceRegistry(registry.getJson().getLocation(),
-            registry.isWatcherEnabled(), eventPublisher,
-            registeredServiceReplicationStrategy.getIfAvailable(), resourceNamingStrategy.getIfAvailable());
+            registry.isWatcherEnabled(),
+            eventPublisher,
+            registeredServiceReplicationStrategy.getIfAvailable(),
+            resourceNamingStrategy.getIfAvailable(),
+            registeredServiceJsonSerializers());
+    }
+
+    @ConditionalOnMissingBean(name = "registeredServiceJsonSerializers")
+    @Bean
+    public Collection<StringSerializer<RegisteredService>> registeredServiceJsonSerializers() {
+        return CollectionUtils.wrapList(new CasAddonsRegisteredServicesJsonSerializer(), registeredServiceJsonSerializer());
+    }
+
+    @ConditionalOnMissingBean(name = "registeredServiceJsonSerializer")
+    @Bean
+    public StringSerializer<RegisteredService> registeredServiceJsonSerializer() {
+        val filter = new SimpleFilterProvider();
+        filter.addFilter(RegisteredServiceSimpleBeanPropertyFilter.FILTER_NAME,
+            new RegisteredServiceSimpleBeanPropertyFilter(servicesManager.getIfAvailable()));
+        return new RegisteredServiceJsonSerializer(filter);
     }
 
     @Bean

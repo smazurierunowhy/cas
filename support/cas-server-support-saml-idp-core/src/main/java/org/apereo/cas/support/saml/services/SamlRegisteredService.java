@@ -143,7 +143,7 @@ public class SamlRegisteredService extends RegexRegisteredService {
     private HashSet<String> encryptableAttributes = new HashSet<>();
 
     @Override
-    protected AbstractRegisteredService newInstance() {
+    public AbstractRegisteredService newInstance() {
         return new SamlRegisteredService();
     }
 

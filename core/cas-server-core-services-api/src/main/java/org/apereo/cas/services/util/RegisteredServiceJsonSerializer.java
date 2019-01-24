@@ -6,6 +6,7 @@ import org.apereo.cas.util.serialization.AbstractJacksonBackedStringSerializer;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import org.apache.commons.io.FileUtils;
@@ -26,6 +27,14 @@ public class RegisteredServiceJsonSerializer extends AbstractJacksonBackedString
 
     public RegisteredServiceJsonSerializer(final PrettyPrinter prettyPrinter) {
         super(prettyPrinter);
+    }
+
+    public RegisteredServiceJsonSerializer(final FilterProvider filterProvider) {
+        super(filterProvider);
+    }
+
+    public RegisteredServiceJsonSerializer(final PrettyPrinter prettyPrinter, final FilterProvider filterProvider) {
+        super(prettyPrinter, filterProvider);
     }
 
     @Override

@@ -8,6 +8,8 @@ import org.apereo.cas.services.InMemoryServiceRegistry;
 import org.apereo.cas.services.JsonServiceRegistry;
 import org.apereo.cas.services.replication.NoOpRegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.DefaultRegisteredServiceResourceNamingStrategy;
+import org.apereo.cas.services.util.RegisteredServiceJsonSerializer;
+import org.apereo.cas.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
@@ -55,7 +57,8 @@ public class SamlRegisteredServiceTests {
 
         val dao = new JsonServiceRegistry(RESOURCE, false,
             mock(ApplicationEventPublisher.class), new NoOpRegisteredServiceReplicationStrategy(),
-            new DefaultRegisteredServiceResourceNamingStrategy());
+            new DefaultRegisteredServiceResourceNamingStrategy(),
+            CollectionUtils.wrapList(new RegisteredServiceJsonSerializer()));
         dao.save(service);
         dao.load();
     }
@@ -73,7 +76,8 @@ public class SamlRegisteredServiceTests {
 
         val dao = new JsonServiceRegistry(RESOURCE, false,
             mock(ApplicationEventPublisher.class), new NoOpRegisteredServiceReplicationStrategy(),
-            new DefaultRegisteredServiceResourceNamingStrategy());
+            new DefaultRegisteredServiceResourceNamingStrategy(),
+            CollectionUtils.wrapList(new RegisteredServiceJsonSerializer()));
         dao.save(service);
         dao.load();
     }

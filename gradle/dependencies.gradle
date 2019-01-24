@@ -74,6 +74,12 @@ ext.libraries = [
                     force = true
                 }
         ],
+        javers                    : [
+                dependencies.create("org.javers:javers-core:$javersVersion") {
+                    exclude(group: "org.slf4j", module: "slf4j-api")
+                    force = true
+                }
+        ],
         swagger                 : [
                 dependencies.create("io.swagger:swagger-annotations:$swaggerVersion") {
                     exclude(group: "org.apache.commons", module: "commons-lang3")

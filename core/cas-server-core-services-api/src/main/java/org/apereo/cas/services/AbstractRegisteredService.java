@@ -1,5 +1,8 @@
 package org.apereo.cas.services;
 
+import org.apereo.cas.services.util.RegisteredServiceSimpleBeanPropertyFilter;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -47,6 +50,7 @@ import java.util.Map;
 @DiscriminatorColumn(name = "expression_type", length = 50, discriminatorType = DiscriminatorType.STRING, columnDefinition = "VARCHAR(50) DEFAULT 'regex'")
 @Table(name = "RegexRegisteredService")
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
+@JsonFilter(RegisteredServiceSimpleBeanPropertyFilter.FILTER_NAME)
 @ToString
 @Getter
 @Setter
@@ -181,7 +185,7 @@ public abstract class AbstractRegisteredService implements RegisteredService {
      *
      * @return the registered service
      */
-    protected abstract AbstractRegisteredService newInstance();
+    public abstract AbstractRegisteredService newInstance();
 
     @Override
     public Map<String, RegisteredServiceProperty> getProperties() {

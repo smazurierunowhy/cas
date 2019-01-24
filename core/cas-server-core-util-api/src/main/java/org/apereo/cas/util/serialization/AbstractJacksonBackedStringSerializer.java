@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,7 @@ public abstract class AbstractJacksonBackedStringSerializer<T> implements String
 
     private final ObjectMapper objectMapper;
     private final transient PrettyPrinter prettyPrinter;
+    private final transient FilterProvider filterProvider;
 
     /**
      * Instantiates a new Registered service json serializer.
@@ -58,14 +60,18 @@ public abstract class AbstractJacksonBackedStringSerializer<T> implements String
         this(new DefaultPrettyPrinter());
     }
 
-    /**
-     * Instantiates a new Registered service json serializer.
-     *
-     * @param prettyPrinter the pretty printer
-     */
     public AbstractJacksonBackedStringSerializer(final PrettyPrinter prettyPrinter) {
+        this(prettyPrinter, null);
+    }
+
+    public AbstractJacksonBackedStringSerializer(final FilterProvider filterProvider) {
+        this(new DefaultPrettyPrinter(), filterProvider);
+    }
+
+    public AbstractJacksonBackedStringSerializer(final PrettyPrinter prettyPrinter, final FilterProvider filterProvider) {
         this.objectMapper = initializeObjectMapper();
         this.prettyPrinter = prettyPrinter;
+        this.filterProvider = filterProvider == null ? this.objectMapper.getSerializationConfig().getFilterProvider() : filterProvider;
     }
 
     private boolean isJsonFormat() {
@@ -126,7 +132,7 @@ public abstract class AbstractJacksonBackedStringSerializer<T> implements String
     @SneakyThrows
     public void to(final OutputStream out, final T object) {
         try (val writer = new StringWriter()) {
-            this.objectMapper.writer(this.prettyPrinter).writeValue(writer, object);
+            writeObjectToWriter(writer, object);
             val hjsonString = isJsonFormat()
                 ? JsonValue.readHjson(writer.toString()).toString(Stringify.HJSON)
                 : writer.toString();
@@ -138,7 +144,7 @@ public abstract class AbstractJacksonBackedStringSerializer<T> implements String
     @SneakyThrows
     public void to(final Writer out, final T object) {
         try (val writer = new StringWriter()) {
-            this.objectMapper.writer(this.prettyPrinter).writeValue(writer, object);
+            writeObjectToWriter(writer, object);
 
             if (isJsonFormat()) {
                 val opt = this.prettyPrinter instanceof MinimalPrettyPrinter ? Stringify.PLAIN : Stringify.FORMATTED;
@@ -153,7 +159,7 @@ public abstract class AbstractJacksonBackedStringSerializer<T> implements String
     @SneakyThrows
     public void to(final File out, final T object) {
         try (val writer = new StringWriter()) {
-            this.objectMapper.writer(this.prettyPrinter).writeValue(writer, object);
+            writeObjectToWriter(writer, object);
 
             if (isJsonFormat()) {
                 try (val fileWriter = Files.newBufferedWriter(out.toPath(), StandardCharsets.UTF_8)) {
@@ -241,5 +247,22 @@ public abstract class AbstractJacksonBackedStringSerializer<T> implements String
             LOGGER.debug(e.getMessage(), e);
         }
         return null;
+    }
+
+    /**
+     * Write object to writer.
+     *
+     * @param writer the writer
+     * @param object the object
+     */
+    protected void writeObjectToWriter(final StringWriter writer, final Object object) {
+        try {
+            this.objectMapper
+                .writer(this.prettyPrinter)
+                .with(this.filterProvider)
+                .writeValue(writer, object);
+        } catch (final Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 }

@@ -31,9 +31,10 @@ public class OAuthRegisteredServiceTests {
     private final ServiceRegistry dao;
 
     public OAuthRegisteredServiceTests() throws Exception {
-        this.dao = new JsonServiceRegistry(RESOURCE, false,
-            mock(ApplicationEventPublisher.class), new NoOpRegisteredServiceReplicationStrategy(),
-            new DefaultRegisteredServiceResourceNamingStrategy());
+        this.dao = new JsonServiceRegistry(RESOURCE, false, mock(ApplicationEventPublisher.class),
+            new NoOpRegisteredServiceReplicationStrategy(),
+            new DefaultRegisteredServiceResourceNamingStrategy(),
+            CollectionUtils.wrapList(new RegisteredServiceJsonSerializer()));
     }
 
     @BeforeClass

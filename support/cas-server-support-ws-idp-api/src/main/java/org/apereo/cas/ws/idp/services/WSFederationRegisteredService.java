@@ -63,7 +63,7 @@ public class WSFederationRegisteredService extends RegexRegisteredService {
     private String appliesTo;
 
     @Override
-    protected AbstractRegisteredService newInstance() {
+    public AbstractRegisteredService newInstance() {
         return new WSFederationRegisteredService();
     }
 

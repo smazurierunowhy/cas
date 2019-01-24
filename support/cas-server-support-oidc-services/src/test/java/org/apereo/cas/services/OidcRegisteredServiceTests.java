@@ -2,6 +2,8 @@ package org.apereo.cas.services;
 
 import org.apereo.cas.services.replication.NoOpRegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.DefaultRegisteredServiceResourceNamingStrategy;
+import org.apereo.cas.services.util.RegisteredServiceJsonSerializer;
+import org.apereo.cas.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
@@ -31,10 +33,10 @@ public class OidcRegisteredServiceTests {
     private final ServiceRegistry dao;
 
     public OidcRegisteredServiceTests() throws Exception {
-        this.dao = new JsonServiceRegistry(RESOURCE, false,
-            mock(ApplicationEventPublisher.class),
+        this.dao = new JsonServiceRegistry(RESOURCE, false, mock(ApplicationEventPublisher.class),
             new NoOpRegisteredServiceReplicationStrategy(),
-            new DefaultRegisteredServiceResourceNamingStrategy());
+            new DefaultRegisteredServiceResourceNamingStrategy(),
+            CollectionUtils.wrapList(new RegisteredServiceJsonSerializer()));
     }
 
     @BeforeClass

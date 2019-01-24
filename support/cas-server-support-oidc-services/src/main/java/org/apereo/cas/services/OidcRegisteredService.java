@@ -128,7 +128,7 @@ public class OidcRegisteredService extends OAuthRegisteredService {
     }
 
     @Override
-    protected AbstractRegisteredService newInstance() {
+    public AbstractRegisteredService newInstance() {
         return new OidcRegisteredService();
     }
 

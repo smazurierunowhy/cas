@@ -97,4 +97,9 @@ public class CasAddonsRegisteredServicesJsonSerializer extends RegisteredService
     public boolean supports(final File file) {
         return file.getName().startsWith(SERVICE_REGISTRY_FILENAME);
     }
+
+    @Override
+    public boolean canHandleSerialization() {
+        return false;
+    }
 }

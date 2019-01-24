@@ -294,15 +294,17 @@ public abstract class AbstractResourceBasedServiceRegistry extends AbstractServi
         }
         val f = getRegisteredServiceFileName(service);
         try (val out = Files.newOutputStream(f.toPath())) {
-            val result = this.registeredServiceSerializers.stream().anyMatch(s -> {
-                try {
-                    s.to(out, service);
-                    return true;
-                } catch (final Exception e) {
-                    LOGGER.debug(e.getMessage(), e);
-                    return false;
-                }
-            });
+            val result = this.registeredServiceSerializers.stream()
+                .filter(StringSerializer::canHandleSerialization)
+                .anyMatch(s -> {
+                    try {
+                        s.to(out, service);
+                        return true;
+                    } catch (final Exception e) {
+                        LOGGER.debug(e.getMessage(), e);
+                        return false;
+                    }
+                });
             if (!result) {
                 throw new IOException("The service definition file could not be saved at " + f.getCanonicalPath());
             }

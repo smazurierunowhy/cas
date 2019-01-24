@@ -3,6 +3,7 @@ package org.apereo.cas.services;
 import org.apereo.cas.services.replication.NoOpRegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.DefaultRegisteredServiceResourceNamingStrategy;
 import org.apereo.cas.services.util.RegisteredServiceJsonSerializer;
+import org.apereo.cas.util.CollectionUtils;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -39,10 +40,10 @@ public class JsonServiceRegistryTests extends AbstractResourceBasedServiceRegist
     @SneakyThrows
     @Override
     public ServiceRegistry getNewServiceRegistry() {
-        this.dao = new JsonServiceRegistry(RESOURCE, true,
-            mock(ApplicationEventPublisher.class),
+        this.dao = new JsonServiceRegistry(RESOURCE, true, mock(ApplicationEventPublisher.class),
             new NoOpRegisteredServiceReplicationStrategy(),
-            new DefaultRegisteredServiceResourceNamingStrategy());
+            new DefaultRegisteredServiceResourceNamingStrategy(),
+            CollectionUtils.wrapList(new RegisteredServiceJsonSerializer()));
         return this.dao;
     }
 

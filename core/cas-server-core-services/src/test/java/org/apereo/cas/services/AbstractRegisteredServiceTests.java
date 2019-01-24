@@ -58,7 +58,7 @@ public class AbstractRegisteredServiceTests {
         }
 
         @Override
-        protected AbstractRegisteredService newInstance() {
+        public AbstractRegisteredService newInstance() {
             return this;
         }
 

@@ -53,7 +53,7 @@ public class OAuthRegisteredService extends RegexRegisteredService {
     private HashSet<String> supportedResponseTypes = new HashSet<>();
 
     @Override
-    protected AbstractRegisteredService newInstance() {
+    public AbstractRegisteredService newInstance() {
         return new OAuthRegisteredService();
     }
 

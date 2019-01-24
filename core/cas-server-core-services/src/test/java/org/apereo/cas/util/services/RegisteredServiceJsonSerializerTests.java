@@ -8,12 +8,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * This is {@link DefaultRegisteredServiceJsonSerializerTests}.
+ * This is {@link RegisteredServiceJsonSerializerTests}.
  *
  * @author Misagh Moayyed
  * @since 5.1.0
  */
-public class DefaultRegisteredServiceJsonSerializerTests {
+public class RegisteredServiceJsonSerializerTests {
 
     @Test
     public void checkNullability() {
@@ -31,5 +31,9 @@ public class DefaultRegisteredServiceJsonSerializerTests {
         assertNotNull(s.getAttributeReleasePolicy());
         assertNotNull(s.getProxyPolicy());
         assertNotNull(s.getUsernameAttributeProvider());
+        assertNotNull(s.getContacts());
+        assertNotNull(s.getEnvironments());
+        assertNotNull(s.getExpirationPolicy());
+        assertNotNull(s.getMultifactorPolicy());
     }
 }

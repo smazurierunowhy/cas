@@ -53,7 +53,7 @@ public class RegexRegisteredService extends AbstractRegisteredService {
     }
 
     @Override
-    protected AbstractRegisteredService newInstance() {
+    public AbstractRegisteredService newInstance() {
         return new RegexRegisteredService();
     }
 

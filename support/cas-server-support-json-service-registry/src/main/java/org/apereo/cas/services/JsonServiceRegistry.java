@@ -3,15 +3,15 @@ package org.apereo.cas.services;
 import org.apereo.cas.services.replication.RegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.AbstractResourceBasedServiceRegistry;
 import org.apereo.cas.services.resource.RegisteredServiceResourceNamingStrategy;
-import org.apereo.cas.services.util.CasAddonsRegisteredServicesJsonSerializer;
 import org.apereo.cas.services.util.RegisteredServiceJsonSerializer;
-import org.apereo.cas.util.CollectionUtils;
+import org.apereo.cas.util.serialization.StringSerializer;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.Resource;
 
 import java.nio.file.Path;
+import java.util.Collection;
 
 /**
  * Implementation of {@code ServiceRegistry} that reads services definition from JSON
@@ -65,9 +65,9 @@ public class JsonServiceRegistry extends AbstractResourceBasedServiceRegistry {
      */
     public JsonServiceRegistry(final Resource configDirectory, final boolean enableWatcher, final ApplicationEventPublisher eventPublisher,
                                final RegisteredServiceReplicationStrategy registeredServiceReplicationStrategy,
-                               final RegisteredServiceResourceNamingStrategy resourceNamingStrategy) throws Exception {
-        super(configDirectory, CollectionUtils.wrapList(new CasAddonsRegisteredServicesJsonSerializer(),
-            new RegisteredServiceJsonSerializer()), enableWatcher, eventPublisher,
+                               final RegisteredServiceResourceNamingStrategy resourceNamingStrategy,
+                               final Collection<StringSerializer<RegisteredService>> registeredServiceSerializers) throws Exception {
+        super(configDirectory, registeredServiceSerializers, enableWatcher, eventPublisher,
             registeredServiceReplicationStrategy, resourceNamingStrategy);
     }
 

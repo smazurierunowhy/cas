@@ -4,6 +4,8 @@ import org.apereo.cas.services.JsonServiceRegistry;
 import org.apereo.cas.services.RegisteredServiceTestUtils;
 import org.apereo.cas.services.replication.NoOpRegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.DefaultRegisteredServiceResourceNamingStrategy;
+import org.apereo.cas.services.util.RegisteredServiceJsonSerializer;
+import org.apereo.cas.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -49,10 +51,10 @@ public class GrouperRegisteredServiceAccessStrategyTests {
         val grouper = new GrouperRegisteredServiceAccessStrategy();
         grouper.setRequiredAttributes(attributes);
         service.setAccessStrategy(grouper);
-        val dao = new JsonServiceRegistry(RESOURCE, false,
-            mock(ApplicationEventPublisher.class),
+        val dao = new JsonServiceRegistry(RESOURCE, false, mock(ApplicationEventPublisher.class),
             new NoOpRegisteredServiceReplicationStrategy(),
-            new DefaultRegisteredServiceResourceNamingStrategy());
+            new DefaultRegisteredServiceResourceNamingStrategy(),
+            CollectionUtils.wrapList(new RegisteredServiceJsonSerializer()));
         dao.save(service);
         dao.load();
     }
