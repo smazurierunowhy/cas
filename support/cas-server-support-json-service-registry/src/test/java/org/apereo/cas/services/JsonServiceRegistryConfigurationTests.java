@@ -62,10 +62,6 @@ public class JsonServiceRegistryConfigurationTests {
     public final ConditionalIgnoreRule conditionalIgnoreRule = new ConditionalIgnoreRule();
 
     @Autowired
-    @Qualifier("serviceRegistry")
-    private ServiceRegistry serviceRegistry;
-
-    @Autowired
     @Qualifier("servicesManager")
     private ServicesManager servicesManager;
 
@@ -86,12 +82,14 @@ public class JsonServiceRegistryConfigurationTests {
     @Test
     public void verifyOperation() {
         val svc1 = RegisteredServiceTestUtils.getRegisteredService("sample-service");
-        servicesManager.save(svc1);
         svc1.setExpirationPolicy(new DefaultRegisteredServiceExpirationPolicy(true, LocalDate.now()));
+        servicesManager.save(svc1);
+
+        val svc2 = (AbstractRegisteredService) servicesManager.findServiceBy(svc1.getId());
         val accessStrategy = new DefaultRegisteredServiceAccessStrategy(false, true);
         accessStrategy.setDelegatedAuthenticationPolicy(
             new DefaultRegisteredServiceDelegatedAuthenticationPolicy(CollectionUtils.wrapList("something")));
-        svc1.setAccessStrategy(accessStrategy);
-        servicesManager.save(svc1);
+        svc2.setAccessStrategy(accessStrategy);
+        servicesManager.save(svc2);
     }
 }

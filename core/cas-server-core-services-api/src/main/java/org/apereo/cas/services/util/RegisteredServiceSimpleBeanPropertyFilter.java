@@ -40,7 +40,7 @@ public class RegisteredServiceSimpleBeanPropertyFilter extends SimpleBeanPropert
 
     @Override
     public void serializeAsField(final Object pojo, final JsonGenerator jgen, final SerializerProvider provider, final PropertyWriter writer) throws Exception {
-        if (canWriteProperty(provider, (RegisteredService) pojo, writer)) {
+        if (canWriteProperty((RegisteredService) pojo, writer)) {
             LOGGER.trace("Serializing field [{}]", writer.getName());
             super.serializeAsField(pojo, jgen, provider, writer);
         } else {
@@ -48,7 +48,7 @@ public class RegisteredServiceSimpleBeanPropertyFilter extends SimpleBeanPropert
         }
     }
 
-    private boolean canWriteProperty(final SerializerProvider provider, final RegisteredService givenService, final PropertyWriter writer) {
+    private boolean canWriteProperty(final RegisteredService givenService, final PropertyWriter writer) {
         var service = servicesManager.findServiceBy(givenService.getId());
         if (service == null) {
             service = ((AbstractRegisteredService) givenService).newInstance();
