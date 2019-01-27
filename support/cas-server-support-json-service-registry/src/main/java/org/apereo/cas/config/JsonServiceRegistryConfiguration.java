@@ -3,6 +3,7 @@ package org.apereo.cas.config;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.services.JsonServiceRegistry;
 import org.apereo.cas.services.RegisteredService;
+import org.apereo.cas.services.RegisteredServiceChangelogManager;
 import org.apereo.cas.services.ServiceRegistry;
 import org.apereo.cas.services.ServiceRegistryExecutionPlan;
 import org.apereo.cas.services.ServiceRegistryExecutionPlanConfigurer;
@@ -62,6 +63,10 @@ public class JsonServiceRegistryConfiguration {
     @Qualifier("registeredServiceResourceNamingStrategy")
     private ObjectProvider<RegisteredServiceResourceNamingStrategy> resourceNamingStrategy;
 
+    @Autowired
+    @Qualifier("registeredServiceChangelogManager")
+    private ObjectProvider<RegisteredServiceChangelogManager> registeredServiceChangelogManager;
+
     @Bean
     @SneakyThrows
     public ServiceRegistry jsonServiceRegistry() {
@@ -85,7 +90,7 @@ public class JsonServiceRegistryConfiguration {
     public StringSerializer<RegisteredService> registeredServiceJsonSerializer() {
         val filter = new SimpleFilterProvider();
         filter.addFilter(RegisteredServiceSimpleBeanPropertyFilter.FILTER_NAME,
-            new RegisteredServiceSimpleBeanPropertyFilter(servicesManager.getIfAvailable()));
+            new RegisteredServiceSimpleBeanPropertyFilter(registeredServiceChangelogManager.getIfAvailable()));
         return new RegisteredServiceJsonSerializer(filter);
     }
 

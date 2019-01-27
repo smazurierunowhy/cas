@@ -9,7 +9,6 @@ dependencies {
     implementation project(":core:cas-server-core-configuration-api")
 
     implementation libraries.bouncycastle
-    implementation libraries.javers
     
     testImplementation project(path: ":core:cas-server-core-authentication-api", configuration: "tests")
 }

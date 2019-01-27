@@ -6,6 +6,7 @@ import org.apereo.cas.services.DefaultServicesManager;
 import org.apereo.cas.services.DenyAllAttributeReleasePolicy;
 import org.apereo.cas.services.InMemoryServiceRegistry;
 import org.apereo.cas.services.JsonServiceRegistry;
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 import org.apereo.cas.services.replication.NoOpRegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.DefaultRegisteredServiceResourceNamingStrategy;
 import org.apereo.cas.services.util.RegisteredServiceJsonSerializer;
@@ -89,7 +90,8 @@ public class SamlRegisteredServiceTests {
         service.setServiceId("^http://.+");
         service.setMetadataLocation(METADATA_LOCATION);
         val dao = new InMemoryServiceRegistry(mock(ApplicationEventPublisher.class), Collections.singletonList(service));
-        val impl = new DefaultServicesManager(dao, mock(ApplicationEventPublisher.class), new HashSet<>());
+        val impl = new DefaultServicesManager(dao, mock(ApplicationEventPublisher.class), new HashSet<>(),
+            new NoOpRegisteredServiceChangelogManager());
         impl.load();
 
         val s = impl.findServiceBy(new WebApplicationServiceFactory()

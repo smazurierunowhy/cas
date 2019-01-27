@@ -15,7 +15,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="org.apereo.cas" level="trace" additivity="false">
+        <Logger name="org.apereo.cas" level="warn" additivity="false">
             <AppenderRef ref="console"/>
         </Logger>
         <Logger name="com.fasterxml.jackson" level="debug" additivity="false">

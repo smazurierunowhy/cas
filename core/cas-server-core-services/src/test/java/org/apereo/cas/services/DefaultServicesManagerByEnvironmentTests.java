@@ -1,5 +1,6 @@
 package org.apereo.cas.services;
 
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 import org.apereo.cas.util.CollectionUtils;
 
 import lombok.val;
@@ -17,7 +18,7 @@ public class DefaultServicesManagerByEnvironmentTests extends AbstractServicesMa
     @Override
     protected ServicesManager getServicesManagerInstance() {
         return new DefaultServicesManager(serviceRegistry, mock(ApplicationEventPublisher.class),
-            CollectionUtils.wrapSet("prod1", "qa1"));
+            CollectionUtils.wrapSet("prod1", "qa1"), new NoOpRegisteredServiceChangelogManager());
     }
 
     @Test

@@ -9,6 +9,7 @@ import org.apereo.cas.services.DefaultServicesManager;
 import org.apereo.cas.services.InMemoryServiceRegistry;
 import org.apereo.cas.services.RegexRegisteredService;
 import org.apereo.cas.services.RegisteredServiceTestUtils;
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 import org.apereo.cas.web.flow.logout.LogoutAction;
 import org.apereo.cas.web.support.WebUtils;
 
@@ -57,7 +58,8 @@ public class LogoutActionTests extends AbstractWebflowActionsTests {
         when(this.requestContext.getFlowScope()).thenReturn(new LocalAttributeMap());
 
         val publisher = mock(ApplicationEventPublisher.class);
-        this.serviceManager = new DefaultServicesManager(new InMemoryServiceRegistry(publisher), publisher, new HashSet<>());
+        this.serviceManager = new DefaultServicesManager(new InMemoryServiceRegistry(publisher), publisher, new HashSet<>(),
+            new NoOpRegisteredServiceChangelogManager());
         this.serviceManager.load();
     }
 

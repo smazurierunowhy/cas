@@ -18,6 +18,7 @@ import org.apereo.cas.services.ImmutableServiceRegistry;
 import org.apereo.cas.services.InMemoryServiceRegistry;
 import org.apereo.cas.services.RegisteredService;
 import org.apereo.cas.services.RegisteredServiceAccessStrategyAuditableEnforcer;
+import org.apereo.cas.services.RegisteredServiceChangelogManager;
 import org.apereo.cas.services.RegisteredServiceCipherExecutor;
 import org.apereo.cas.services.RegisteredServicesEventListener;
 import org.apereo.cas.services.ServiceRegistry;
@@ -25,6 +26,7 @@ import org.apereo.cas.services.ServiceRegistryExecutionPlan;
 import org.apereo.cas.services.ServiceRegistryExecutionPlanConfigurer;
 import org.apereo.cas.services.ServicesManager;
 import org.apereo.cas.services.ServicesManagerScheduledLoader;
+import org.apereo.cas.services.changelog.JaversRegisteredServiceChangelogManager;
 import org.apereo.cas.services.replication.NoOpRegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.replication.RegisteredServiceReplicationStrategy;
 import org.apereo.cas.services.resource.DefaultRegisteredServiceResourceNamingStrategy;
@@ -133,9 +135,9 @@ public class CasCoreServicesConfiguration {
         val activeProfiles = Arrays.stream(environment.getActiveProfiles()).collect(Collectors.toSet());
         if (managementType == ServiceRegistryProperties.ServiceManagementTypes.DOMAIN) {
             LOGGER.trace("Managing CAS service definitions via domains");
-            return new DomainServicesManager(serviceRegistry(), eventPublisher, activeProfiles);
+            return new DomainServicesManager(serviceRegistry(), eventPublisher, activeProfiles, registeredServiceChangelogManager());
         }
-        return new DefaultServicesManager(serviceRegistry(), eventPublisher, activeProfiles);
+        return new DefaultServicesManager(serviceRegistry(), eventPublisher, activeProfiles, registeredServiceChangelogManager());
     }
 
     @Bean
@@ -153,6 +155,13 @@ public class CasCoreServicesConfiguration {
     @RefreshScope
     public RegisteredServiceReplicationStrategy registeredServiceReplicationStrategy() {
         return new NoOpRegisteredServiceReplicationStrategy();
+    }
+
+    @ConditionalOnMissingBean(name = "registeredServiceChangelogManager")
+    @Bean
+    @RefreshScope
+    public RegisteredServiceChangelogManager registeredServiceChangelogManager() {
+        return new JaversRegisteredServiceChangelogManager();
     }
 
     @ConditionalOnMissingBean(name = "registeredServiceResourceNamingStrategy")

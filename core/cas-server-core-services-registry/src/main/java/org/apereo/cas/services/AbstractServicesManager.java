@@ -42,6 +42,7 @@ public abstract class AbstractServicesManager implements ServicesManager, Initia
     private final ServiceRegistry serviceRegistry;
     private final transient ApplicationEventPublisher eventPublisher;
     private final Set<String> environments;
+    private final RegisteredServiceChangelogManager changelogManager;
 
     private Map<Long, RegisteredService> services = new ConcurrentHashMap<>();
 
@@ -173,6 +174,7 @@ public abstract class AbstractServicesManager implements ServicesManager, Initia
         publishEvent(new CasRegisteredServicePreSaveEvent(this, registeredService));
         val r = this.serviceRegistry.save(registeredService);
         this.services.put(r.getId(), r);
+        this.changelogManager.commit(r);
         saveInternal(registeredService);
 
         if (publishEvent) {
@@ -194,6 +196,7 @@ public abstract class AbstractServicesManager implements ServicesManager, Initia
         LOGGER.trace("Loading services from [{}]", serviceRegistry.getName());
         this.services = this.serviceRegistry.load()
             .stream()
+            .peek(this.changelogManager::commit)
             .collect(Collectors.toConcurrentMap(r -> {
                 LOGGER.debug("Adding registered service [{}]", r.getServiceId());
                 return r.getId();

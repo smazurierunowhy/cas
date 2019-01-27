@@ -4,6 +4,7 @@ import org.apereo.cas.CasProtocolConstants;
 import org.apereo.cas.services.DefaultServicesManager;
 import org.apereo.cas.services.RegisteredServiceTestUtils;
 import org.apereo.cas.services.ServiceRegistry;
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
@@ -46,7 +47,8 @@ public class SimpleWebApplicationServiceImplTests {
         request.setParameter(CasProtocolConstants.PARAMETER_SERVICE, SERVICE);
         val impl = new WebApplicationServiceFactory().createService(request);
         val response = new WebApplicationServiceResponseBuilder(
-            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                new NoOpRegisteredServiceChangelogManager()))
             .build(impl, "ticketId", RegisteredServiceTestUtils.getAuthentication());
         assertNotNull(response);
         assertEquals(Response.ResponseType.REDIRECT, response.getResponseType());
@@ -76,7 +78,8 @@ public class SimpleWebApplicationServiceImplTests {
         val impl = new WebApplicationServiceFactory().createService(request);
 
         val response = new WebApplicationServiceResponseBuilder(
-            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                new NoOpRegisteredServiceChangelogManager()))
             .build(impl, null,
                 RegisteredServiceTestUtils.getAuthentication());
         assertNotNull(response);
@@ -90,7 +93,8 @@ public class SimpleWebApplicationServiceImplTests {
         request.setParameter(SERVICE, "http://foo.com/");
         val impl = new WebApplicationServiceFactory().createService(request);
         val response = new WebApplicationServiceResponseBuilder(
-            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                new NoOpRegisteredServiceChangelogManager()))
             .build(impl, null,
                 RegisteredServiceTestUtils.getAuthentication());
         assertNotNull(response);
@@ -105,7 +109,8 @@ public class SimpleWebApplicationServiceImplTests {
         request.setParameter(CasProtocolConstants.PARAMETER_SERVICE, "http://foo.com/?param=test");
         val impl = new WebApplicationServiceFactory().createService(request);
         val response = new WebApplicationServiceResponseBuilder(
-            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                new NoOpRegisteredServiceChangelogManager()))
             .build(impl, null, RegisteredServiceTestUtils.getAuthentication());
         assertNotNull(response);
         assertEquals(Response.ResponseType.REDIRECT, response.getResponseType());

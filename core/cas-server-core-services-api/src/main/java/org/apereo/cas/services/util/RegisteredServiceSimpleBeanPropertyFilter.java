@@ -1,9 +1,7 @@
 package org.apereo.cas.services.util;
 
-import org.apereo.cas.services.AbstractRegisteredService;
 import org.apereo.cas.services.RegisteredService;
-import org.apereo.cas.services.ServicesManager;
-import org.apereo.cas.services.resource.RegisteredServiceResourceDeltaExtractor;
+import org.apereo.cas.services.RegisteredServiceChangelogManager;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -12,10 +10,6 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
-import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 
 /**
  * This is {@link RegisteredServiceSimpleBeanPropertyFilter}.
@@ -25,18 +19,14 @@ import org.javers.core.diff.ListCompareAlgorithm;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class RegisteredServiceSimpleBeanPropertyFilter extends SimpleBeanPropertyFilter implements RegisteredServiceResourceDeltaExtractor {
+public class RegisteredServiceSimpleBeanPropertyFilter extends SimpleBeanPropertyFilter implements RegisteredServiceChangelogManager {
 
     /**
      * Name of this filter.
      */
     public static final String FILTER_NAME = "RegisteredServiceResourceDeltaSimpleBeanPropertyFilter";
 
-    private static final Javers JAVERS = JaversBuilder.javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
-        .build();
-
-    private final ServicesManager servicesManager;
+    private final RegisteredServiceChangelogManager changelogManager;
 
     @Override
     public void serializeAsField(final Object pojo, final JsonGenerator jgen, final SerializerProvider provider, final PropertyWriter writer) throws Exception {
@@ -49,14 +39,11 @@ public class RegisteredServiceSimpleBeanPropertyFilter extends SimpleBeanPropert
     }
 
     private boolean canWriteProperty(final RegisteredService givenService, final PropertyWriter writer) {
-        var service = servicesManager.findServiceBy(givenService.getId());
-        if (service == null) {
-            service = ((AbstractRegisteredService) givenService).newInstance();
-            service.setId(givenService.getId());
+        val latest = changelogManager.getLatestVersion(givenService);
+        if (latest == null) {
+            return true;
         }
-        val diff = JAVERS.compare(service, givenService);
-        LOGGER.trace("Examining differences for registered service [{}] and field [{}]", givenService.getName(), writer.getName());
-        val changes = diff.getPropertyChanges(writer.getName());
-        return !changes.isEmpty();
+        val changes = changelogManager.compare(latest, givenService);
+        return false;
     }
 }

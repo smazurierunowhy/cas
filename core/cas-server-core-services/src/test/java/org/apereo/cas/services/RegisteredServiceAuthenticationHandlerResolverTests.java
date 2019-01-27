@@ -5,6 +5,7 @@ import org.apereo.cas.authentication.AuthenticationHandler;
 import org.apereo.cas.authentication.DefaultAuthenticationTransaction;
 import org.apereo.cas.authentication.handler.DefaultAuthenticationHandlerResolver;
 import org.apereo.cas.authentication.handler.RegisteredServiceAuthenticationHandlerResolver;
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 import org.apereo.cas.util.CollectionUtils;
 
 import lombok.val;
@@ -47,7 +48,8 @@ public class RegisteredServiceAuthenticationHandlerResolverTests {
 
         val dao = new InMemoryServiceRegistry(mock(ApplicationEventPublisher.class), list);
 
-        this.defaultServicesManager = new DefaultServicesManager(dao, mock(ApplicationEventPublisher.class), new HashSet<>());
+        this.defaultServicesManager = new DefaultServicesManager(dao, mock(ApplicationEventPublisher.class), new HashSet<>(),
+            new NoOpRegisteredServiceChangelogManager());
         this.defaultServicesManager.load();
 
         val handler1 = new AcceptUsersAuthenticationHandler("handler1");

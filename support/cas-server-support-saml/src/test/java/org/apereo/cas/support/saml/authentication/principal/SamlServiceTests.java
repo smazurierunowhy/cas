@@ -8,6 +8,7 @@ import org.apereo.cas.config.authentication.support.SamlAuthenticationEventExecu
 import org.apereo.cas.config.authentication.support.SamlServiceFactoryConfiguration;
 import org.apereo.cas.services.DefaultServicesManager;
 import org.apereo.cas.services.ServiceRegistry;
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 import org.apereo.cas.support.saml.AbstractOpenSamlTests;
 import org.apereo.cas.support.saml.SamlProtocolConstants;
 import org.apereo.cas.web.support.DefaultArgumentExtractor;
@@ -57,7 +58,8 @@ public class SamlServiceTests extends AbstractOpenSamlTests {
         val impl = samlServiceFactory.createService(request);
 
         val response = new SamlServiceResponseBuilder(
-            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                new NoOpRegisteredServiceChangelogManager()))
             .build(impl, "ticketId", CoreAuthenticationTestUtils.getAuthentication());
         assertNotNull(response);
         assertEquals(Response.ResponseType.REDIRECT, response.getResponseType());
@@ -79,7 +81,8 @@ public class SamlServiceTests extends AbstractOpenSamlTests {
         request.setParameter(SamlProtocolConstants.CONST_PARAM_TARGET, "service");
         val impl = samlServiceFactory.createService(request);
         val response = new SamlServiceResponseBuilder(
-            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+            new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                new NoOpRegisteredServiceChangelogManager()))
             .build(impl, null, CoreAuthenticationTestUtils.getAuthentication());
         assertNotNull(response);
         assertEquals(Response.ResponseType.REDIRECT, response.getResponseType());

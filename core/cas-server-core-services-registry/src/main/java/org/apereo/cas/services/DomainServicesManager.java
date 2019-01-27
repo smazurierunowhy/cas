@@ -38,8 +38,9 @@ public class DomainServicesManager extends AbstractServicesManager {
     private final Pattern domainExtractor = RegexUtils.createPattern("^\\^?https?\\??://(.*?)(?:[(]?[:/]|$)");
     private final Pattern domainPattern = RegexUtils.createPattern("^[a-z0-9-.]*$");
 
-    public DomainServicesManager(final ServiceRegistry serviceRegistry, final ApplicationEventPublisher eventPublisher, final Set<String> environments) {
-        super(serviceRegistry, eventPublisher, environments);
+    public DomainServicesManager(final ServiceRegistry serviceRegistry, final ApplicationEventPublisher eventPublisher,
+                                 final Set<String> environments, final RegisteredServiceChangelogManager changelogManager) {
+        super(serviceRegistry, eventPublisher, environments, changelogManager);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.apereo.cas.services;
 
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
+
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +43,9 @@ public abstract class AbstractServicesManagerTests {
     }
 
     protected ServicesManager getServicesManagerInstance() {
-        return new DefaultServicesManager(serviceRegistry, mock(ApplicationEventPublisher.class), new HashSet<>());
+        return new DefaultServicesManager(serviceRegistry, mock(ApplicationEventPublisher.class),
+            new HashSet<>(),
+            new NoOpRegisteredServiceChangelogManager());
     }
 
     protected ServiceRegistry getServiceRegistryInstance() {

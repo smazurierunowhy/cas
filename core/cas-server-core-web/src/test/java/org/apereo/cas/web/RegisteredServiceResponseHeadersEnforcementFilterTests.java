@@ -10,6 +10,7 @@ import org.apereo.cas.services.InMemoryServiceRegistry;
 import org.apereo.cas.services.RegisteredServiceProperty;
 import org.apereo.cas.services.RegisteredServiceProperty.RegisteredServiceProperties;
 import org.apereo.cas.services.RegisteredServiceTestUtils;
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 import org.apereo.cas.services.web.support.RegisteredServiceResponseHeadersEnforcementFilter;
 import org.apereo.cas.web.support.DefaultArgumentExtractor;
 
@@ -117,7 +118,7 @@ public class RegisteredServiceResponseHeadersEnforcementFilterTests {
 
     private static RegisteredServiceResponseHeadersEnforcementFilter getFilterForProperty(final Pair<RegisteredServiceProperties, String>... properties) {
         val servicesManager = new DefaultServicesManager(new InMemoryServiceRegistry(mock(ApplicationEventPublisher.class)),
-            mock(ApplicationEventPublisher.class), new LinkedHashSet<>());
+            mock(ApplicationEventPublisher.class), new LinkedHashSet<>(), new NoOpRegisteredServiceChangelogManager());
         val argumentExtractor = new DefaultArgumentExtractor(new WebApplicationServiceFactory());
 
         val service = RegisteredServiceTestUtils.getRegisteredService("service-0");

@@ -1,5 +1,7 @@
 package org.apereo.cas.services;
 
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
+
 import lombok.NoArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -16,6 +18,7 @@ public class DomainServicesManagerTests extends AbstractServicesManagerTests {
 
     @Override
     protected ServicesManager getServicesManagerInstance() {
-        return new DomainServicesManager(serviceRegistry, mock(ApplicationEventPublisher.class), new HashSet<>());
+        return new DomainServicesManager(serviceRegistry, mock(ApplicationEventPublisher.class), new HashSet<>(),
+            new NoOpRegisteredServiceChangelogManager());
     }
 }

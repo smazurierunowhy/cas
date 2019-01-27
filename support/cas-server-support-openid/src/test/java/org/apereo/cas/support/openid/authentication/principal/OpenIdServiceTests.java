@@ -3,6 +3,7 @@ package org.apereo.cas.support.openid.authentication.principal;
 import org.apereo.cas.authentication.CoreAuthenticationTestUtils;
 import org.apereo.cas.services.DefaultServicesManager;
 import org.apereo.cas.services.ServiceRegistry;
+import org.apereo.cas.services.changelog.NoOpRegisteredServiceChangelogManager;
 import org.apereo.cas.support.openid.AbstractOpenIdTests;
 import org.apereo.cas.support.openid.OpenIdProtocolConstants;
 
@@ -71,7 +72,8 @@ public class OpenIdServiceTests extends AbstractOpenIdTests {
 
             val response = new OpenIdServiceResponseBuilder(OPEN_ID_PREFIX_URL,
                 serverManager, centralAuthenticationService,
-                new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+                new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                    new NoOpRegisteredServiceChangelogManager()))
                 .build(openIdService, "something", CoreAuthenticationTestUtils.getAuthentication());
             assertNotNull(response);
 
@@ -81,7 +83,8 @@ public class OpenIdServiceTests extends AbstractOpenIdTests {
 
             val response2 = new OpenIdServiceResponseBuilder(OPEN_ID_PREFIX_URL, serverManager,
                 centralAuthenticationService,
-                new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+                new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                    new NoOpRegisteredServiceChangelogManager()))
                 .build(openIdService, null, CoreAuthenticationTestUtils.getAuthentication());
             assertEquals("cancel", response2.getAttributes().get(OpenIdProtocolConstants.OPENID_MODE));
         } catch (final Exception e) {
@@ -110,7 +113,8 @@ public class OpenIdServiceTests extends AbstractOpenIdTests {
             }
             val response = new OpenIdServiceResponseBuilder(OPEN_ID_PREFIX_URL, serverManager,
                 centralAuthenticationService,
-                new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>()))
+                new DefaultServicesManager(mock(ServiceRegistry.class), mock(ApplicationEventPublisher.class), new HashSet<>(),
+                    new NoOpRegisteredServiceChangelogManager()))
                 .build(openIdService, st, CoreAuthenticationTestUtils.getAuthentication());
             assertNotNull(response);
 
