@@ -2,6 +2,7 @@ package org.apereo.cas.web.flow.config;
 
 import org.apereo.cas.CipherExecutor;
 import org.apereo.cas.configuration.CasConfigurationProperties;
+import org.apereo.cas.spring.ExcludeFromLazyInitialization;
 import org.apereo.cas.throttle.AuthenticationThrottlingExecutionPlan;
 import org.apereo.cas.util.CollectionUtils;
 import org.apereo.cas.web.flow.CasFlowHandlerAdapter;
@@ -98,6 +99,7 @@ public class CasWebflowContextConfiguration {
 
     @RefreshScope
     @Bean
+    @ExcludeFromLazyInitialization
     public ViewFactoryCreator viewFactoryCreator() {
         val resolver = new MvcViewFactoryCreator();
         resolver.setViewResolvers(CollectionUtils.wrap(this.registeredServiceViewResolver.getIfAvailable()));
@@ -127,6 +129,7 @@ public class CasWebflowContextConfiguration {
 
     @RefreshScope
     @Bean
+    @ExcludeFromLazyInitialization
     public FlowBuilderServices builder() {
         val builder = new FlowBuilderServicesBuilder();
         builder.setViewFactoryCreator(viewFactoryCreator());
@@ -134,7 +137,6 @@ public class CasWebflowContextConfiguration {
         builder.setDevelopmentMode(casProperties.getWebflow().isRefresh());
         return builder.build();
     }
-
 
     @Bean
     public HandlerAdapter loginHandlerAdapter() {
@@ -163,7 +165,6 @@ public class CasWebflowContextConfiguration {
         return handler;
     }
 
-    @Lazy
     @Bean
     public Object[] loginFlowHandlerMappingInterceptors() {
         val interceptors = new ArrayList<Object>();
@@ -176,6 +177,7 @@ public class CasWebflowContextConfiguration {
     }
 
     @Bean
+    @ExcludeFromLazyInitialization
     public HandlerMapping loginFlowHandlerMapping() {
         val handler = new FlowHandlerMapping();
         handler.setOrder(LOGOUT_FLOW_HANDLER_ORDER - 1);
@@ -185,6 +187,7 @@ public class CasWebflowContextConfiguration {
     }
 
     @Bean
+    @ExcludeFromLazyInitialization
     public FlowDefinitionRegistry logoutFlowRegistry() {
         val builder = new FlowDefinitionRegistryBuilder(this.applicationContext, builder());
         builder.setBasePath(BASE_CLASSPATH_WEBFLOW);
@@ -193,6 +196,7 @@ public class CasWebflowContextConfiguration {
     }
 
     @Bean
+    @ExcludeFromLazyInitialization
     public FlowDefinitionRegistry loginFlowRegistry() {
         val builder = new FlowDefinitionRegistryBuilder(this.applicationContext, builder());
         builder.setBasePath(BASE_CLASSPATH_WEBFLOW);
@@ -202,6 +206,7 @@ public class CasWebflowContextConfiguration {
 
     @RefreshScope
     @Bean
+    @ExcludeFromLazyInitialization
     public FlowExecutor logoutFlowExecutor() {
         val factory = new WebflowExecutorFactory(casProperties.getWebflow(),
             logoutFlowRegistry(), this.webflowCipherExecutor.getIfAvailable(), new FlowExecutionListener[0]);
@@ -210,6 +215,7 @@ public class CasWebflowContextConfiguration {
 
     @RefreshScope
     @Bean
+    @ExcludeFromLazyInitialization
     public FlowExecutor loginFlowExecutor() {
         val factory = new WebflowExecutorFactory(casProperties.getWebflow(),
             loginFlowRegistry(), this.webflowCipherExecutor.getIfAvailable(),
@@ -222,6 +228,7 @@ public class CasWebflowContextConfiguration {
     @Bean
     @Order(0)
     @RefreshScope
+    @ExcludeFromLazyInitialization
     public CasWebflowConfigurer defaultWebflowConfigurer() {
         val c = new DefaultLoginWebflowConfigurer(builder(), loginFlowRegistry(), applicationContext, casProperties);
         c.setLogoutFlowDefinitionRegistry(logoutFlowRegistry());
@@ -233,6 +240,7 @@ public class CasWebflowContextConfiguration {
     @Bean
     @Order(0)
     @RefreshScope
+    @ExcludeFromLazyInitialization
     public CasWebflowConfigurer defaultLogoutWebflowConfigurer() {
         val c = new DefaultLogoutWebflowConfigurer(builder(), loginFlowRegistry(),
             applicationContext, casProperties);
@@ -245,6 +253,7 @@ public class CasWebflowContextConfiguration {
     @Bean
     @DependsOn("defaultWebflowConfigurer")
     @RefreshScope
+    @ExcludeFromLazyInitialization
     public CasWebflowConfigurer groovyWebflowConfigurer() {
         val c = new GroovyWebflowConfigurer(builder(), loginFlowRegistry(), applicationContext, casProperties);
         c.setLogoutFlowDefinitionRegistry(logoutFlowRegistry());
@@ -253,6 +262,7 @@ public class CasWebflowContextConfiguration {
 
     @Autowired
     @Bean
+    @ExcludeFromLazyInitialization
     public CasWebflowExecutionPlan casWebflowExecutionPlan(final List<CasWebflowExecutionPlanConfigurer> configurers) {
         val plan = new DefaultCasWebflowExecutionPlan();
         configurers.forEach(c -> c.configureWebflowExecutionPlan(plan));
@@ -262,6 +272,7 @@ public class CasWebflowContextConfiguration {
 
     @ConditionalOnMissingBean(name = "casDefaultWebflowExecutionPlanConfigurer")
     @Bean
+    @ExcludeFromLazyInitialization
     public CasWebflowExecutionPlanConfigurer casDefaultWebflowExecutionPlanConfigurer() {
         return new CasWebflowExecutionPlanConfigurer() {
             @Override
