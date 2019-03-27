@@ -15,9 +15,16 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="org.apereo" level="off" additivity="false">
+        <Logger name="org.apereo" level="debug" additivity="false">
             <AppenderRef ref="console"/>
         </Logger>
+        <Logger name="com.unboundid.scim2" level="trace" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="org.glassfish.jersey" level="trace" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+
         <Logger name="org.apereo.cas.web.flow" level="off" additivity="false">
             <AppenderRef ref="console"/>
         </Logger>

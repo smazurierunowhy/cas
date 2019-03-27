@@ -57,7 +57,8 @@ public class CasScimConfiguration implements CasWebflowExecutionPlanConfigurer {
     @Bean
     @DependsOn("defaultWebflowConfigurer")
     public CasWebflowConfigurer scimWebflowConfigurer() {
-        return new ScimWebflowConfigurer(flowBuilderServices, loginFlowDefinitionRegistry.getIfAvailable(), applicationContext, casProperties);
+        return new ScimWebflowConfigurer(flowBuilderServices, loginFlowDefinitionRegistry.getIfAvailable(),
+            applicationContext, casProperties);
     }
 
     @RefreshScope
@@ -83,7 +84,7 @@ public class CasScimConfiguration implements CasWebflowExecutionPlanConfigurer {
             throw new BeanCreationException("Scim target cannot be blank");
         }
 
-        if (casProperties.getScim().getVersion() == 1) {
+        if (scim.getVersion() == 1) {
             return new ScimV1PrincipalProvisioner(scim.getTarget(),
                 scim.getOauthToken(),
                 scim.getUsername(),
