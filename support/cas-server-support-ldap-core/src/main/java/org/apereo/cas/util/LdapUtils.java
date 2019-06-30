@@ -326,8 +326,12 @@ public class LdapUtils {
                 LOGGER.debug("Executing password modification op for active directory based on "
                     + "[https://support.microsoft.com/en-us/kb/269190]");
                 val operation = new ModifyOperation(modifyConnection);
-                val response = operation.execute(new ModifyRequest(currentDn, new AttributeModification(AttributeModificationType.REPLACE, new UnicodePwdAttribute(newPassword))));
+
+                val response = operation.execute(new ModifyRequest(currentDn,
+                        new AttributeModification(AttributeModificationType.REMOVE, new UnicodePwdAttribute(oldPassword)) ,
+                        new AttributeModification(AttributeModificationType.ADD, new UnicodePwdAttribute(newPassword))   ));
                 LOGGER.debug("Result code [{}], message: [{}]", response.getResult(), response.getMessage());
+                modifyConnection.close();
                 return response.getResultCode() == ResultCode.SUCCESS;
             }
 

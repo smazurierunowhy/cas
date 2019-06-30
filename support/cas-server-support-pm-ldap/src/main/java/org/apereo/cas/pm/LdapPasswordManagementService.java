@@ -123,10 +123,14 @@ public class LdapPasswordManagementService extends BasePasswordManagementService
 
             if (LdapUtils.containsResultEntry(response)) {
                 val dn = response.getResult().getEntry().getDn();
+                ldap.setBindDn(dn);
+                ldap.setBindCredential(c.getPassword());
+                val factory2 = LdapUtils.newLdaptiveConnectionFactory(ldap);
                 LOGGER.debug("Updating account password for [{}]", dn);
-                if (LdapUtils.executePasswordModifyOperation(dn, factory, c.getPassword(), bean.getPassword(),
+                if (LdapUtils.executePasswordModifyOperation(dn, factory2, c.getPassword(), bean.getPassword(),
                     properties.getLdap().getType())) {
                     LOGGER.debug("Successfully updated the account password for [{}]", dn);
+                    
                     return true;
                 }
                 LOGGER.error("Could not update the LDAP entry's password for [{}] and base DN [{}]", filter.format(), ldap.getBaseDn());
